@@ -1,12 +1,30 @@
 <script setup>
-import { reactive } from "vue";
+import { onMounted, reactive, toRaw } from "vue";
 import { RouterLink } from "vue-router";
-import JobListing from "./JobListing.vue";
-import jobsData from "../jobs.json";
 
-const jobs = reactive(jobsData);
+import axios from "axios";
+import { PulseLoader } from "vue-spinner";
+import "vue-spinner/style.css";
+
+import JobListing from "./JobListing.vue";
+
+const jobsState = reactive({
+  jobs: [],
+  isLoading: true,
+});
 // to log reactives we must use toRaw() method imported from vue
 // console.log(toRaw(jobs));
+
+onMounted(async () => {
+  try {
+    const response = await axios.get("http://localhost:3000/jobs");
+    jobsState.jobs = response.data;
+  } catch (error) {
+    console.error(error);
+  } finally {
+    jobsState.isLoading = false;
+  }
+});
 
 defineProps({
   limit: Number,
@@ -23,12 +41,15 @@ defineProps({
       <h2 class="text-3xl font-bold text-green-500 mb-6 text-center">
         Browse Jobs
       </h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div v-if="jobsState.isLoading" class="text-center">
+        <PulseLoader />
+      </div>
+      <div v-else class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!--        <div v-for="job in jobs.jobs" :key="job.id">-->
         <!--          {{ job.title }}-->
         <!--        </div>-->
         <JobListing
-          v-for="job in jobs.jobs.slice(0, limit || jobs.jobs.length)"
+          v-for="job in jobsState.jobs.slice(0, limit || jobsState.jobs.length)"
           :key="job.id"
           :job="job"
         />
