@@ -1,5 +1,11 @@
 <script setup>
 import logo from "../assets/images/logo.png";
+import { RouterLink, useRoute } from "vue-router";
+
+const isActiveLink = (routePath) => {
+  const route = useRoute();
+  return route.path === routePath;
+};
 </script>
 
 <template>
@@ -24,17 +30,50 @@ import logo from "../assets/images/logo.png";
               <!--                >Home</a-->
               <!--              >-->
               <RouterLink
-                class="text-white hover:bg-green-900 hover:text-white rounded-md px-3 py-2 transition ease-in delay-75"
+                :class="[
+                  isActiveLink('/')
+                    ? 'bg-green-900'
+                    : 'hover:bg-green-900 hover:text-white',
+                  'text-white',
+                  'rounded-md',
+                  'px-3',
+                  'py-2',
+                  'transition',
+                  'ease-in',
+                  'delay-75',
+                ]"
                 to="/"
                 >Home</RouterLink
               >
               <RouterLink
-                class="text-white hover:bg-green-900 hover:text-white rounded-md px-3 py-2 transition ease-in delay-75"
+                :class="[
+                  isActiveLink('/jobs')
+                    ? 'bg-green-900'
+                    : 'hover:bg-green-900 hover:text-white',
+                  'text-white',
+                  'rounded-md',
+                  'px-3',
+                  'py-2',
+                  'transition',
+                  'ease-in',
+                  'delay-75',
+                ]"
                 to="/jobs"
                 >Jobs</RouterLink
               >
               <RouterLink
-                class="text-white hover:bg-green-900 hover:text-white rounded-md px-3 py-2 transition ease-in delay-75"
+                :class="[
+                  isActiveLink('/jobs/add')
+                    ? 'bg-green-900'
+                    : 'hover:bg-green-900 hover:text-white',
+                  'text-white',
+                  'rounded-md',
+                  'px-3',
+                  'py-2',
+                  'transition',
+                  'ease-in',
+                  'delay-75',
+                ]"
                 to="/jobs/add"
                 >Add Job</RouterLink
               >
