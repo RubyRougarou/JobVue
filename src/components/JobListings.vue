@@ -9,6 +9,10 @@ const jobs = reactive(jobsData);
 
 defineProps({
   limit: Number,
+  showButton: {
+    type: Boolean,
+    default: false,
+  },
 });
 </script>
 
@@ -23,16 +27,16 @@ defineProps({
         <!--          {{ job.title }}-->
         <!--        </div>-->
         <JobListing
-          v-for="job in jobs.jobs.slice(0, limit)"
+          v-for="job in jobs.jobs.slice(0, limit || jobs.jobs.length)"
           :key="job.id"
           :job="job"
         />
       </div>
     </div>
   </section>
-  <section class="m-auto max-w-lg my-10 px-6">
+  <section v-if="showButton" class="m-auto max-w-lg my-10 px-6">
     <a
-      href="jobs.html"
+      href="/jobs"
       class="block bg-black text-white text-center py-4 px-6 rounded-xl hover:bg-gray-700"
       >View All Jobs</a
     >

@@ -9,28 +9,34 @@ import logo from "../assets/images/logo.png";
         <div
           class="flex flex-1 items-center justify-center md:items-stretch md:justify-start"
         >
-          <a class="flex items-center shrink-0 mr-4" href="/">
+          <RouterLink class="flex items-center shrink-0 mr-4" to="/">
             <img :src="logo" alt="Vue Job" class="w-auto h-10" />
             <span class="ml-2 text-2xl font-bold text-white hidden md:block"
               >Vue Job</span
-            >
-          </a>
+            ></RouterLink
+          >
+
           <div class="md:ml-auto">
             <div class="flex space-x-2">
-              <a
-                href="/"
-                class="text-white bg-green-900 hover:bg-gray-900 hover:text-white rounded-md px-3 py-2 transition ease-in delay-100"
-                >Home</a
-              >
-              <a
-                href="jobs.html"
+              <!--              <a-->
+              <!--                href="/"-->
+              <!--                class="text-white bg-green-900 hover:bg-gray-900 hover:text-white rounded-md px-3 py-2 transition ease-in delay-100"-->
+              <!--                >Home</a-->
+              <!--              >-->
+              <RouterLink
                 class="text-white hover:bg-green-900 hover:text-white rounded-md px-3 py-2 transition ease-in delay-75"
-                >Jobs</a
+                to="/"
+                >Home</RouterLink
               >
-              <a
-                href="add-job.html"
+              <RouterLink
                 class="text-white hover:bg-green-900 hover:text-white rounded-md px-3 py-2 transition ease-in delay-75"
-                >Add Job</a
+                to="/jobs"
+                >Jobs</RouterLink
+              >
+              <RouterLink
+                class="text-white hover:bg-green-900 hover:text-white rounded-md px-3 py-2 transition ease-in delay-75"
+                to="/jobs/add"
+                >Add Job</RouterLink
               >
             </div>
           </div>
