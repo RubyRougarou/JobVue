@@ -1,10 +1,21 @@
 <script setup>
-import { reactive } from "vue";
+import { onMounted, reactive } from "vue";
+// import router from "../router/index.js";
+import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
-import router from "../router";
 import { useToast } from "vue-toastification";
 
+const route = useRoute();
+const jobId = route.params.id;
+
+const router = useRouter();
+
 const toast = useToast();
+
+const state = reactive({
+  job: {},
+  isLoading: true,
+});
 
 const form = reactive({
   type: "Full-Time",
@@ -21,30 +32,51 @@ const form = reactive({
 });
 
 const handleSubmit = async () => {
-  const newJob = {
-    title: form.title,
-    type: form.type,
-    location: form.location,
-    description: form.description,
-    salary: form.salary,
-    company: {
-      name: form.company.name,
-      description: form.company.description,
-      contactEmail: form.company.contactEmail,
-      contactPhone: form.company.contactPhone,
-    },
-  };
-
   try {
-    const response = await axios.post("/api/jobs", newJob);
-    toast.success("Job Added Successfully");
+    const updatedJob = {
+      title: form.title,
+      type: form.type,
+      location: form.location,
+      description: form.description,
+      salary: form.salary,
+      company: {
+        name: form.company.name,
+        description: form.company.description,
+        contactEmail: form.company.contactEmail,
+        contactPhone: form.company.contactPhone,
+      },
+    };
+
+    const response = await axios.put(`/api/jobs/${jobId}`, updatedJob);
     router.push(`/jobs/${response.data.id}`);
-    console.log(response);
+    return;
+    toast.success("Job Updated Successfully");
   } catch (error) {
-    toast.error("An Error Occurred!");
     console.error(error);
+    toast.error("An Error Occurred!");
   }
 };
+
+onMounted(async () => {
+  try {
+    const response = await axios.get(`/api/jobs/${jobId}`);
+    state.job = response.data;
+    // populate
+    form.type = state.job.type;
+    form.title = state.job.title;
+    form.description = state.job.description;
+    form.salary = state.job.salary;
+    form.location = state.job.location;
+    form.company.name = state.job.company.name;
+    form.company.description = state.job.company.description;
+    form.company.contactEmail = state.job.company.contactEmail;
+    form.company.contactPhone = state.job.company.contactPhone;
+  } catch (error) {
+    console.error(error);
+  } finally {
+    state.isLoading = false;
+  }
+});
 </script>
 
 <template>
@@ -53,8 +85,8 @@ const handleSubmit = async () => {
       <div
         class="bg-white px-6 py-8 mb-4 shadow-md rounded-md border m-4 md:m-0"
       >
-        <form @submit.prevent="handleSubmit">
-          <h2 class="text-3xl text-center font-semibold mb-6">Add Job</h2>
+        <form @submit.prevent="handleSubmit()">
+          <h2 class="text-3xl text-center font-semibold mb-6">Edit Job</h2>
 
           <div class="mb-4">
             <label for="type" class="block text-gray-700 font-bold mb-2"
@@ -206,10 +238,10 @@ const handleSubmit = async () => {
 
           <div>
             <button
-              class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline"
+              class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline cursor-pointer"
               type="submit"
             >
-              Add Job
+              Edit Job
             </button>
           </div>
         </form>

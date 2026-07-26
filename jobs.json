@@ -1,9 +1,8 @@
 {
   "jobs": [
     {
-      "id": "1",
       "title": "Senior Vue Dev",
-      "type": "Full-Time",
+      "type": "Remote",
       "location": "Boston, MA",
       "description": "We are seeking a talented Front-End Developer to join our team in Boston, MA. The ideal candidate will have strong skills in HTML, CSS, and JavaScript, with experience working with modern JavaScript frameworks such as Vue or Angular.",
       "salary": "$90K - $100K",
@@ -12,7 +11,8 @@
         "description": "NewTek Solutions is a leading technology company specializing in web development and digital solutions. We pride ourselves on delivering high-quality products and services to our clients while fostering a collaborative and innovative work environment.",
         "contactEmail": "contact1@teksolutions.com",
         "contactPhone": "111-555-5555"
-      }
+      },
+      "id": "1"
     },
     {
       "id": "2",
