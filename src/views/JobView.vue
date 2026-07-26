@@ -1,12 +1,14 @@
 <script setup>
-import { ref, onMounted, reactive } from "vue";
+import { ref, onMounted, reactive, toRaw } from "vue";
 
-import { useRoute, RouterLink } from "vue-router";
+import { useRoute, RouterLink, useRouter } from "vue-router";
 import { PulseLoader } from "vue-spinner";
 import axios from "axios";
+import BackButton from "../components/BackButton.vue";
 
 const route = useRoute();
 const jobId = route.params.id;
+const router = useRouter();
 
 const state = reactive({
   job: {},
@@ -15,7 +17,7 @@ const state = reactive({
 
 onMounted(async () => {
   try {
-    const response = await axios.get(`http://localhost:3000/jobs/${jobId}`);
+    const response = await axios.get(`/api/jobs/${jobId}`);
     state.job = response.data;
   } catch (error) {
     console.error("Error fetching Job", error);
@@ -23,9 +25,23 @@ onMounted(async () => {
     state.isLoading = false;
   }
 });
+
+const deleteJob = async (jobId, e) => {
+  try {
+    const response = await axios.delete(`http://localhost:3000/jobs/${jobId}`);
+    console.log(response);
+
+    e.preventDefault();
+
+    router.replace("/jobs");
+  } catch (error) {
+    console.error(error);
+  }
+};
 </script>
 
 <template>
+  <BackButton />
   <div v-if="state.isLoading" class="text-center mt-30">
     <PulseLoader />
   </div>
@@ -69,13 +85,10 @@ onMounted(async () => {
           <div class="bg-white p-6 rounded-lg shadow-md">
             <h3 class="text-xl font-bold mb-6">Company Info</h3>
 
-            <h2 class="text-2xl">NewTek Solutions</h2>
+            <h2 class="text-2xl">{{ state.job.company.name }}</h2>
 
             <p class="my-2">
-              NewTek Solutions is a leading technology company specializing in
-              web development and digital solutions. We pride ourselves on
-              delivering high-quality products and services to our clients while
-              fostering a collaborative and innovative work environment.
+              {{ state.job.company.description }}
             </p>
 
             <hr class="my-4" />
@@ -83,23 +96,27 @@ onMounted(async () => {
             <h3 class="text-xl">Contact Email:</h3>
 
             <p class="my-2 bg-green-100 p-2 font-bold">
-              contact@newteksolutions.com
+              {{ state.job.company.contactEmail }}
             </p>
 
             <h3 class="text-xl">Contact Phone:</h3>
 
-            <p class="my-2 bg-green-100 p-2 font-bold">555-555-5555</p>
+            <p class="my-2 bg-green-100 p-2 font-bold">
+              {{ state.job.company.contactPhone }}
+            </p>
           </div>
 
           <!-- Manage -->
           <div class="bg-white p-6 rounded-lg shadow-md mt-6">
             <h3 class="text-xl font-bold mb-6">Manage Job</h3>
-            <a
-              href="add-job.html"
+            <RouterLink
+              :to="`/jobs/edit/${jobId}`"
               class="bg-green-500 hover:bg-green-600 text-white text-center font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline mt-4 block"
-              >Edit Job</a
+              >Edit Job</RouterLink
             >
             <button
+              @click.prevent="deleteJob(jobId, $event)"
+              type="button"
               class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline mt-4 block"
             >
               Delete Job
